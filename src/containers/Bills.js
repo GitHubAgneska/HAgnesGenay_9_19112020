@@ -55,7 +55,8 @@ export default class {
               }
             }
           })
-          .filter(bill => bill.email === userEmail)
+          .sort(bill => bill.date)  // corrected
+          // .filter(bill => bill.email === userEmail)
           console.log('length', bills.length)
         return bills
       })
