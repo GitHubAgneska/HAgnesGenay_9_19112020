@@ -55,9 +55,11 @@ export default class {
               }
             }
           })
-          .sort(bill => bill.date)  // corrected
+          .sort(function(a,b){
+            return new Date(b.date) - new Date(a.date) // added
+          }) 
           // .filter(bill => bill.email === userEmail)
-          console.log('length', bills.length)
+          // console.log('length', bills.length)
         return bills
       })
       .catch(error => error)
