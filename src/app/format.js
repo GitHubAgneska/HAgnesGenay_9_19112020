@@ -1,11 +1,34 @@
 export const formatDate = (dateStr) => {
+
+  console.log('dateString==',dateStr );
   
+  if ( dateStr && !dateStr=='')  {
+      // check date format;
+      let dateRegex = /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i;
+      dateRegex.test(dateStr)? dateStr: dateStr = '*ERROR DATE*';
 
-  if (dateStr)  {
+      let datevalues = dateStr.split(/[\.\-\/]/);
+      
+      // check year is at index 0
+      let year = datevalues.filter(n => n.length === 4);
+      if ( year.length > 0) {
+        
+        let parsedYear = parseInt(year);
+  
+        if ( parsedYear < 1990 || parsedYear > 2021 ) { dateStr = '*ERROR DATE*'; } else { 
+          
+            let yearCurrentIndex = datevalues.indexOf(year.toString());
+            
+            if ( !yearCurrentIndex == 0) {
+              let temp = year;
+              datevalues.splice(yearCurrentIndex, 1);
+              datevalues.splice(0, 0, temp);
+            }
+            datevalues.join('-');
+        }
+        
+      } else { dateStr = '*ERROR DATE*';}
 
-    validateDate(dateStr);
-
-    console.log('dateStr AFTER VALID==', dateStr);  
 
    /*  const date = new Date(dateStr);  // => Thu Jan 23 2020 01:00:00 GMT+0100 (Central European Standard Time)
     const ye = new Intl.DateTimeFormat('fr', { year: 'numeric' }).format(date)
@@ -20,37 +43,10 @@ export const formatDate = (dateStr) => {
     console.log('parsed==',`${parseInt(da)} ${month.substr(0,3)}. ${ye.toString().substr(2,4)}`); */
 
     //return `${parseInt(da)} ${month.substr(0,3)}. ${ye.toString().substr(2,4)}`
-    return dateStr
   
-  } else { return dateStr = '*ERROR DATE*'}
-
-  function validateDate(dateStr) {
-      // 2021-06-23
-      let dateRegex = /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i;
-      // check date format;
-      dateStr.match(dateRegex)? dateStr: 'XXXX';
-
-      let datevalues = dateStr.split(/[\.\-\/]/);
-      
-      // check year is at index 0
-      let year = datevalues.filter(n => n.length === 4); console.log('YEAR+++', year)
-      let yearCurrentIndex = datevalues.indexOf(year.toString());console.log('YEAR INDEX ===== ', yearCurrentIndex)
-      
-      if ( !yearCurrentIndex == 0) {
-
-        let temp = year;
-        datevalues.splice(yearCurrentIndex, 1);
-        datevalues.splice(0, 0, temp);
-
-        (datevalues[0] >= 1990 && datevalues[0] <= 2021) ? datevalues[0]: '*ERROR DATE*';
-
-        console.log('MODIFIED:',datevalues.join('-'));
-      }
-
-      return datevalues.join('-')
-
-  }
-
+  } else { dateStr = '*ERROR DATE*'; }
+  
+  return dateStr;
 }
 
 export const formatStatus = (status) => {

@@ -56,9 +56,9 @@ export default class {
             }
           })
           .sort(function(a,b){
-            return new Date(b.date) - new Date(a.date) // added
+            return new Date(a.date) - new Date(b.date) // added
           }) 
-          // .filter(bill => bill.email === userEmail)
+          // .filter(bill => bill.email === userEmail)  // -> commented out to be able to use other users' existing bills
           // console.log('length', bills.length)
         return bills
       })
