@@ -24,7 +24,7 @@ export const bills = [{
   "type": "Transports",
   "email": "a@a",
   "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…61.jpeg?alt=media&token=7685cd61-c112-42bc-9929-8a799bb82d8b",
-  "date": "2001-01-01",
+  "date": "2003-01-01",
   "status": "refused",
   "commentAdmin": "en fait non"
 },
@@ -38,7 +38,7 @@ export const bills = [{
   "commentAdmin": "bon bah d'accord",
   "amount": 300,
   "status": "accepted",
-  "date": "2003-03-03",
+  "date": "",
   "commentary": "",
   "fileName": "facture-client-php-exportee-dans-document-pdf-enregistre-sur-disque-dur.png",
   "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…dur.png?alt=media&token=571d34cb-9c8f-430a-af52-66221cae1da3"

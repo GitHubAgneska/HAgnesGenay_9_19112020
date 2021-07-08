@@ -1,11 +1,9 @@
 export const formatDate = (dateStr) => {
-
-  console.log('dateString==',dateStr );
   
   if ( dateStr && !dateStr=='')  {
       // check date format;
       let dateRegex = /^(19|20)\d\d[- /.](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])$/i;
-      dateRegex.test(dateStr)? dateStr: dateStr = '*ERROR DATE*';
+      dateRegex.test(dateStr)? dateStr: dateStr = '2021-03-03';
 
       let datevalues = dateStr.split(/[\.\-\/]/);
       
@@ -15,7 +13,7 @@ export const formatDate = (dateStr) => {
         
         let parsedYear = parseInt(year);
   
-        if ( parsedYear < 1990 || parsedYear > 2021 ) { dateStr = '*ERROR DATE*'; } else { 
+        if ( parsedYear < 1990 || parsedYear > 2021 ) { dateStr = '2021-03-03'; } else { 
           
             let yearCurrentIndex = datevalues.indexOf(year.toString());
             
@@ -27,7 +25,7 @@ export const formatDate = (dateStr) => {
             datevalues.join('-');
         }
         
-      } else { dateStr = '*ERROR DATE*';}
+      } else { dateStr = '2021-03-03';}
 
 
    /*  const date = new Date(dateStr);  // => Thu Jan 23 2020 01:00:00 GMT+0100 (Central European Standard Time)
