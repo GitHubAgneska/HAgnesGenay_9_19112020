@@ -5,7 +5,7 @@ import { fireEvent, screen } from "@testing-library/dom"
 
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on employee button Login In", () => {
-    test("Then It should renders Login page", () => {
+    test("Then It should render Login page", () => {
       document.body.innerHTML = LoginUI()
 
       const inputEmailUser = screen.getByTestId("employee-email-input")
@@ -24,7 +24,7 @@ describe("Given that I am a user on login page", () => {
   })
 
   describe("When I do fill fields in incorrect format and I click on employee button Login In", () => {
-    test("Then It should renders Login page", () => {
+    test("Then It should render Login page", () => {
       document.body.innerHTML = LoginUI()
 
       const inputEmailUser = screen.getByTestId("employee-email-input")
@@ -104,7 +104,7 @@ describe("Given that I am a user on login page", () => {
       )
     })  
 
-    test("It should renders Bills page", () => {
+    test("It should render Bills page", () => {
       expect(screen.getAllByText('Mes notes de frais')).toBeTruthy()
     })
 
@@ -113,7 +113,7 @@ describe("Given that I am a user on login page", () => {
 
 describe("Given that I am a user on login page", () => {
   describe("When I do not fill fields and I click on admin button Login In", () => {
-    test("Then It should renders Login page", () => {
+    test("Then It should render Login page", () => {
       document.body.innerHTML = LoginUI()
 
       const inputEmailUser = screen.getByTestId("admin-email-input")
@@ -132,7 +132,7 @@ describe("Given that I am a user on login page", () => {
   })
 
   describe("When I do fill fields in incorrect format and I click on admin button Login In", () => {
-    test("Then it should renders Login page", () => {
+    test("Then it should render Login page", () => {
       document.body.innerHTML = LoginUI()
 
       const inputEmailUser = screen.getByTestId("admin-email-input")
@@ -215,9 +215,8 @@ describe("Given that I am a user on login page", () => {
         )
       })  
 
-    test("It should renders HR dashboard page", () => {
+    test("It should render HR dashboard page", () => {
       expect(screen.queryByText('Validations')).toBeTruthy()
     })
-  
   })
 })
