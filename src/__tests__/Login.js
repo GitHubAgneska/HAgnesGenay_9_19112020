@@ -47,10 +47,10 @@ describe("Given that I am a user on login page", () => {
   describe("When I do fill fields in correct format and I click on employee button Login In", () => {
     test("Then I should be identified as an Employee in app", () => {
       document.body.innerHTML = LoginUI()
-    const inputData = {
-      email: "johndoe@email.com",
-      password: "azerty"
-    }
+      const inputData = {
+        email: "johndoe@email.com",
+        password: "azerty"
+      }
 
     const inputEmailUser = screen.getByTestId("employee-email-input")
     fireEvent.change(inputEmailUser, { target: { value: inputData.email } })
