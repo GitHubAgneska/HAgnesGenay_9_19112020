@@ -113,7 +113,7 @@ describe('Given I am connected as an Admin', () => {
             userEvent.click(iconEdit)
             expect(handleEditTicket).toHaveBeenCalled()
             userEvent.click(iconEdit)
-            expect(handleEditTicket).toHaveBeenCalled()
+            expect(handleEditTicket).toHaveBeenCalled() // twice ?
         })
     })
 

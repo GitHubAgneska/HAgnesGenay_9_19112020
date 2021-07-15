@@ -12,6 +12,8 @@ import {ROUTES, ROUTES_PATH} from "../constants/routes"
 import Dashboard, {filteredBills, cards} from "../containers/Dashboard.js"
 import DashboardUI from "../views/DashboardUI.js"
 import NewBillUI from "../views/NewBillUI.js"
+import Actions from "../views/Actions.js"
+
 
 
 describe("Given I am connected as an employee", () => {
@@ -50,6 +52,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
+    // UI ?
     test("Then there should be a /'nouvelle note de frais'/ button", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -92,8 +95,23 @@ describe("Given I am connected as an employee and I am on bills page", () => {
   })
 })
 
+
 describe("Given I am connected as an employee and I am on bills page", () => {
-  describe('When I click on the icon eye of the second bill', () => {
+  describe('When page content is loading', () => {
+    test("Then I should see \' Loading...\'", () => {
+      
+    })
+  })
+  describe('When there is an error', () => {
+    test("Then I should see an error message", () => {
+
+    })
+  })
+
+})
+
+describe("Given I am connected as an employee and I am on bills page", () => {
+  describe('When I click on the icon eye of a bill', () => {
     test("Then a modal should open", () => {
   
       Object.defineProperty(window, 'localStorage', {value: localStorageMock})
@@ -117,10 +135,11 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
       expect(handleClickIconEye).toHaveBeenCalled()
-      // + expect handleClickIconEye param billUrl to be null 
+
 
       const modale = screen.getByTestId('modaleFileEmployee')
       expect(modale).toBeTruthy()
+      expect(screen.getAllByText('Justificatif')).toBeTruthy()
     })
   })
 })
@@ -128,33 +147,21 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
 describe("Given I am connected as an employee and I am on bills page", () => {
   describe('When I have clicked on the eye-icon of first bill and a modal is open', () => {
-    test("Then an image should be displayed", async() => {
+    
+    test("Then an image should be displayed", () => {
 
-      Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-      window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
-      
-      const firestore = null
-      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
-      const bills = new Bills({
-        document,
-        onNavigate,
-        firestore,
-        localStorage: window.localStorage
-      })
-      const html = BillsUI({data: bills[1]})
+      const url = 'https://firebasestorage.googleapis.com/v0/b/billable-677b6.appspot.com/o/justificatifs%2FScreenshot%202020-05-26%20at%2020.03.10.png?alt=media&token=b6bfaf5f-4257-429c-934e-e9b31126f7a7'
+      const html = BillsUI({data: bills})
       document.body.innerHTML = html
+      const modale = screen.getByTestId('modaleFileEmployee')
+      const image = screen.findByAltText('bill-img')
+      expect(image.src).toBe(url)
 
-      const img = screen.getAllByAltText('bill-img')
-      const imgSrc = img.src
-      expect(imgSrc).not.toBeNull()
-      expect(imgSrc).not.toBeUndefined()
-      expect(imgSrc.length).toBeGreaterThan(0);
     })
-    test("And image width should be half of parent's width", async() => {
 
-      Object.defineProperty(window, 'localStorage', {value: localStorageMock})
-      window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
-      const html = BillsUI({data: bills[1]})
+    test("And image width should be half of modal's width", () => {
+
+      const html = BillsUI({data: bills})
       document.body.innerHTML = html
 
       const img = screen.findByAltText('bill-img')
