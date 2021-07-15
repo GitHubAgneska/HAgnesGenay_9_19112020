@@ -132,10 +132,11 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
       const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
       const eye = screen.getAllByTestId('icon-eye')[1]
+      const eyeUrl = eye.getAttributeNames('data-bill-url')
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
       expect(handleClickIconEye).toHaveBeenCalled()
-
+      expect(eyeUrl.length).not.toBe(0)
 
       const modale = screen.getByTestId('modaleFileEmployee')
       expect(modale).toBeTruthy()
@@ -148,25 +149,61 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 describe("Given I am connected as an employee and I am on bills page", () => {
   describe('When I have clicked on the eye-icon of first bill and a modal is open', () => {
     
-    test("Then an image should be displayed", () => {
-
-      const url = 'https://firebasestorage.googleapis.com/v0/b/billable-677b6.appspot.com/o/justificatifs%2FScreenshot%202020-05-26%20at%2020.03.10.png?alt=media&token=b6bfaf5f-4257-429c-934e-e9b31126f7a7'
+    test("Then an image should be displayed", async() => {
+      
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
-      const modale = screen.getByTestId('modaleFileEmployee')
-      const image = screen.findByAltText('bill-img')
-      expect(image.src).toBe(url)
-
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
+      const dashboard = new Dashboard({
+        document,
+        onNavigate,
+        firestore:null,
+        bills,
+        localStorage: window.localStorage
     })
 
-    test("And image width should be half of modal's width", () => {
+      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
+      const eye = screen.getAllByTestId('icon-eye')[1]
+      const billUrl = eye.getAttributeNames('data-bill-url')
+      eye.addEventListener('click', handleClickIconEye)
+      userEvent.click(eye)
+
+      const modale = screen.getByTestId('modaleFileEmployee')
+      const image = screen.findByAltText('bill-img')
+      expect(image.src).not.toBeNull()
+      expect(image.src).toBe(billUrl.value)
+    })
+
+    test("And image width should be half of modal's width", async() => {
 
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
+      
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
+      const dashboard = new Dashboard({
+        document,
+        onNavigate,
+        firestore:null,
+        bills,
+        localStorage: window.localStorage
+    })
 
-      const img = screen.findByAltText('bill-img')
-      const imgWidth = Math.floor($('#modaleFile').width() * 0.5)
-      expect(img.width).toBe(imgWidth);
+      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
+      const eye = screen.getAllByTestId('icon-eye')[1]
+
+      eye.addEventListener('click', handleClickIconEye)
+      userEvent.click(eye)
+
+      const modale = screen.getByTestId('modaleFileEmployee')
+      expect(modale).toBeTruthy()
+      
+      const modaleWidth = 900
+      const image = screen.findByAltText('bill-img')
+
+      expect(image.width).not.toBeNull()
+      expect(image.width).not.toBeUndefined()
+      expect(image.width).toBe(450)
+        
     })
   })
 })
