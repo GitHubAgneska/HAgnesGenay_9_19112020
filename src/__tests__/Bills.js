@@ -13,11 +13,23 @@ import Dashboard, {filteredBills, cards} from "../containers/Dashboard.js"
 import DashboardUI from "../views/DashboardUI.js"
 import NewBillUI from "../views/NewBillUI.js"
 import Actions from "../views/Actions.js"
+import ErrorPage from "./ErrorPage.js"
+import LoadingPage from "./LoadingPage.js"
+import firebase from "../__mocks__/firebase"
 
-
+const bill = {
+  "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+  "fileName": "preview-facture-free-201801-pdf-1.jpg",
+}
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
+    
+/*     test('Then, Loading page should be rendered', () => {
+        const html = DashboardUI({loading: true})
+        document.body.innerHTML = html
+        expect(screen.getAllByText('Loading...')).toBeTruthy()
+    }) */
 
     test("Then bill icon in vertical layout should be highlighted", () => {
       // connected as an employee
@@ -99,11 +111,16 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 describe("Given I am connected as an employee and I am on bills page", () => {
   describe('When page content is loading', () => {
     test("Then I should see \' Loading...\'", () => {
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+
       
     })
   })
   describe('When there is an error', () => {
     test("Then I should see an error message", () => {
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
 
     })
   })
@@ -188,7 +205,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
         localStorage: window.localStorage
     })
 
-      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
+      const handleClickIconEye = jest.fn((e)=>dashboard.handleClickIconEye(e, eye))
       const eye = screen.getAllByTestId('icon-eye')[1]
 
       eye.addEventListener('click', handleClickIconEye)
@@ -202,8 +219,34 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
       expect(image.width).not.toBeNull()
       expect(image.width).not.toBeUndefined()
-      expect(image.width).toBe(450)
+      expect(image.width).toEqual(450)
         
     })
+  })
+})
+
+// test d'intégration GET
+describe("Given I am a user connected as an employee", () => {
+  describe("When I am on Bills Page", () => {
+      test("fetches bills from mock API GET", async () => {
+          const getSpy = jest.spyOn(firebase, "get")
+          const bills = await firebase.get()
+          expect(getSpy).toHaveBeenCalledTimes(1)
+          expect(bills.data.length).toBe(4)
+      })
+      test("fetches bills from an API and fails with 404 message error", async () => {
+          firebase.get.mockImplementationOnce(() => Promise.reject(new Error("Erreur 404")))
+          const html = BillsUI({error: "Erreur 404"})
+          document.body.innerHTML = html
+          const message = await screen.getByText(/Erreur 404/)
+          expect(message).toBeTruthy()
+      })
+      test("fetches messages from an API and fails with 500 message error", async () => {
+          firebase.get.mockImplementationOnce(() => Promise.reject(new Error("Erreur 500")))
+          const html = BillsUI({error: "Erreur 500"})
+          document.body.innerHTML = html
+          const message = await screen.getByText(/Erreur 500/)
+          expect(message).toBeTruthy()
+      })
   })
 })

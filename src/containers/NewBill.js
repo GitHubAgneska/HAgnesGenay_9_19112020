@@ -2,6 +2,8 @@
 import { ROUTES_PATH } from '../constants/routes.js'
 import Logout from "./Logout.js"
 
+
+
 export default class NewBill {
   constructor({ document, onNavigate, firestore, localStorage }) {
     this.document = document
@@ -30,7 +32,7 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
-    console.log(this.firestore)
+    console.log(this.firestore.ref)
   }
   handleSubmit = e => {
     e.preventDefault()

@@ -1,4 +1,10 @@
 export default {
+  constructor() {
+    this.mockCollection = jest.fn(() => this)
+    this.mockAdd = jest.fn(() => Promise.resolve(this._mockAddReturn))
+    // return values
+    this._mockAddReturn = null
+  },
   get: () => {
     return Promise.resolve({
       data: [{
@@ -62,5 +68,8 @@ export default {
         "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=4df6ed2c-12c8-42a2-b013-346c1346f732"
       }]
     })
+  },
+  add: (a) => {
+    return this.mockAdd(a)
   }
 }
