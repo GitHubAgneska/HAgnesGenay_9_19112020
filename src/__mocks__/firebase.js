@@ -1,10 +1,5 @@
 export default {
-  constructor() {
-    this.mockCollection = jest.fn(() => this)
-    this.mockAdd = jest.fn(() => Promise.resolve(this._mockAddReturn))
-    // return values
-    this._mockAddReturn = null
-  },
+
   get: () => {
     return Promise.resolve({
       data: [{

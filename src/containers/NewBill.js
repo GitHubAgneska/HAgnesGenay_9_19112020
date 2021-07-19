@@ -20,9 +20,7 @@ export default class NewBill {
   handleChangeFile = e => {
     const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
     const filePath = e.target.value.split(/\\/g)
-    console.log('filePath==', filePath)
     const fileName = filePath[filePath.length-1]
-    console.log('fileName==', fileName)
     this.firestore
       .storage
       .ref(`justificatifs/${fileName}`)
@@ -32,7 +30,6 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
-    console.log(this.firestore.ref)
   }
   handleSubmit = e => {
     e.preventDefault()

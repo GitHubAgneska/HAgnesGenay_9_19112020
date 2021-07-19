@@ -7,47 +7,19 @@ import BillsUI from "../views/BillsUI.js"
 import Bills from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import VerticalLayout from "../views/VerticalLayout"
-import { localStorageMock } from "../__mocks__/localStorage.js"
 import {ROUTES, ROUTES_PATH} from "../constants/routes"
+import router from "../app/Router.js"
 import Dashboard, {filteredBills, cards} from "../containers/Dashboard.js"
 import DashboardUI from "../views/DashboardUI.js"
 import NewBillUI from "../views/NewBillUI.js"
 import Actions from "../views/Actions.js"
-import ErrorPage from "./ErrorPage.js"
-import LoadingPage from "./LoadingPage.js"
 import firebase from "../__mocks__/firebase"
+import { localStorageMock } from "../__mocks__/localStorage.js"
 
-const bill = {
-  "fileUrl": "https://firebasestorage.googleapis.com/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
-  "fileName": "preview-facture-free-201801-pdf-1.jpg",
-}
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     
-/*     test('Then, Loading page should be rendered', () => {
-        const html = DashboardUI({loading: true})
-        document.body.innerHTML = html
-        expect(screen.getAllByText('Loading...')).toBeTruthy()
-    }) */
-
-    test("Then bill icon in vertical layout should be highlighted", () => {
-      // connected as an employee
-      Object.defineProperty(window, 'localStorage', { value: localStorageMock })
-      const user = JSON.stringify({
-        type: 'Employee'
-      })
-      window.localStorage.setItem('user', user)
-      
-      const html = BillsUI({ data: bills})
-      const verticalLayout = VerticalLayout(120)
-      expect(verticalLayout).toBeTruthy()
-      
-      document.body.innerHTML = html
-      const icon = screen.getByTestId('icon-window')
-      //expect(icon).toHaveClass('active-icon')
-    })
-
     test("Then I should see a list of my own bills", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -55,6 +27,9 @@ describe("Given I am connected as an employee", () => {
       expect(billsList).toBeTruthy();
     })
 
+
+    // use firebase with 'Ordering by a specified child key' instead ? 
+    //  https://firebase.google.com/docs/database/admin/retrieve-data
     test("Then bills should be ordered from earliest to latest", () => {
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -105,26 +80,6 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(screen.getByText('Envoyer une note de frais')).toBeTruthy()
     })
   })
-})
-
-
-describe("Given I am connected as an employee and I am on bills page", () => {
-  describe('When page content is loading', () => {
-    test("Then I should see \' Loading...\'", () => {
-      const html = BillsUI({ data: bills })
-      document.body.innerHTML = html
-
-      
-    })
-  })
-  describe('When there is an error', () => {
-    test("Then I should see an error message", () => {
-      const html = BillsUI({ data: bills })
-      document.body.innerHTML = html
-
-    })
-  })
-
 })
 
 describe("Given I am connected as an employee and I am on bills page", () => {
@@ -191,7 +146,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(image.src).toBe(billUrl.value)
     })
 
-    test("And image width should be half of modal's width", async() => {
+    test.skip("And image width should be half of modal's width", async() => {
 
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
@@ -203,7 +158,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
         firestore:null,
         bills,
         localStorage: window.localStorage
-    })
+      })
 
       const handleClickIconEye = jest.fn((e)=>dashboard.handleClickIconEye(e, eye))
       const eye = screen.getAllByTestId('icon-eye')[1]
@@ -219,8 +174,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
       expect(image.width).not.toBeNull()
       expect(image.width).not.toBeUndefined()
-      expect(image.width).toEqual(450)
-        
+      expect(image.width).toEqual(450) 
     })
   })
 })
