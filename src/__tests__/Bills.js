@@ -4,7 +4,7 @@ import '@testing-library/react';
 const $ = require('jquery');
 import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
-import Bills from "../containers/Bills"
+import Bill from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import VerticalLayout from "../views/VerticalLayout"
 import {ROUTES, ROUTES_PATH} from "../constants/routes"
@@ -15,6 +15,7 @@ import NewBillUI from "../views/NewBillUI.js"
 import Actions from "../views/Actions.js"
 import firebase from "../__mocks__/firebase"
 import { localStorageMock } from "../__mocks__/localStorage.js"
+import {handleClickIconEye } from  "../containers/Bills"
 
 
 describe("Given I am connected as an employee", () => {
@@ -60,7 +61,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       Object.defineProperty(window, 'localStorage', {value: localStorageMock})
       window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
       const firestore = null
-      const bills = new Bills({
+      const bill = new Bill({
         document,
         onNavigate,
         firestore,
@@ -72,7 +73,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       const nouvNoteBtn = screen.getByTestId('btn-new-bill')
             
       // const html = NewBillUI()
-      const handleClickNewBill = jest.fn(bills.handleClickNewBill) 
+      const handleClickNewBill = jest.fn(bill.handleClickNewBill) 
       nouvNoteBtn.addEventListener('click', handleClickNewBill)
       
       userEvent.click(nouvNoteBtn) 
@@ -90,20 +91,13 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
-      const onNavigate = (pathname) => {
-          document.body.innerHTML = ROUTES({pathname})
-      }
-      const firestore = null
-      const dashboard = new Dashboard({
-          document,
-          onNavigate,
-          firestore,
-          bills,
-          localStorage: window.localStorage
-      })
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
 
-      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
+      const bill = new Bill({ document, onNavigate, firestore: null, localStorage: window.localStorage })
+
       const eye = screen.getAllByTestId('icon-eye')[1]
+      $.fn.modal = jest.fn();
+      const handleClickIconEye = jest.fn(bill.handleClickIconEye(eye))
       const eyeUrl = eye.getAttributeNames('data-bill-url')
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
@@ -112,7 +106,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
       const modale = screen.getByTestId('modaleFileEmployee')
       expect(modale).toBeTruthy()
-      expect(screen.getAllByText('Justificatif')).toBeTruthy()
+      expect(screen.getByText('Justificatif')).toBeTruthy()
     })
   })
 })
@@ -144,39 +138,6 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       const image = screen.findByAltText('bill-img')
       expect(image.src).not.toBeNull()
       expect(image.src).toBe(billUrl.value)
-    })
-
-    test.skip("And image width should be half of modal's width", () => {
-
-      const html = BillsUI({data: bills})
-      document.body.innerHTML = html
-      
-      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
-      const dashboard = new Dashboard({
-        document,
-        onNavigate,
-        firestore:null,
-        bills,
-        localStorage: window.localStorage
-      })
-
-      const eye = screen.getAllByTestId('icon-eye')[1]
-      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
-
-      eye.addEventListener('click', handleClickIconEye)
-      userEvent.click(eye)
-
-      const modale = screen.getByTestId('modaleFileEmployee')
-      expect(modale).toBeTruthy()
-      
-      // syntax
-      // block in method
-      const modaleWidth = 900
-      const image = screen.findByAltText('bill-img')
-
-      expect(image.width).not.toBeNull()
-      expect(image.width).not.toBeUndefined()
-      expect(image.width).toEqual(450) 
     })
   })
 })
