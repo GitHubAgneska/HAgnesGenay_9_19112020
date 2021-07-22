@@ -1,3 +1,5 @@
+import firebase from "./firebase";
+
 export default {
 
   get: () => {
@@ -64,7 +66,28 @@ export default {
       }]
     })
   },
-  add: (a) => {
-    return this.mockAdd(a)
+  post: async (request) => {
+    const getData = await firebase.get();
+
+    return Promise.resolve({
+      data: [
+        ...getData.data,
+        {
+          id: request.id,
+          status: request.status,
+          pct: request.pct,
+          amount: request.amount,
+          email: request.email,
+          name: request.name,
+          vat: request.vat,
+          fileName: request.filename,
+          date: request.date,
+          commentAdmin: request.commentAdmin,
+          commentary: request.commentary,
+          type: request.type,
+          fileUrl: request.fileUrl,
+        },
+      ],
+    });
   }
 }

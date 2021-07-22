@@ -19,7 +19,7 @@ import { localStorageMock } from "../__mocks__/localStorage.js"
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
-    
+
     test("Then I should see a list of my own bills", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -146,7 +146,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(image.src).toBe(billUrl.value)
     })
 
-    test.skip("And image width should be half of modal's width", async() => {
+    test.skip("And image width should be half of modal's width", () => {
 
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
@@ -160,8 +160,8 @@ describe("Given I am connected as an employee and I am on bills page", () => {
         localStorage: window.localStorage
       })
 
-      const handleClickIconEye = jest.fn((e)=>dashboard.handleClickIconEye(e, eye))
       const eye = screen.getAllByTestId('icon-eye')[1]
+      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
 
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
@@ -169,6 +169,8 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       const modale = screen.getByTestId('modaleFileEmployee')
       expect(modale).toBeTruthy()
       
+      // syntax
+      // block in method
       const modaleWidth = 900
       const image = screen.findByAltText('bill-img')
 

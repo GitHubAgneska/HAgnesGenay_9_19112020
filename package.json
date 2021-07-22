@@ -26,6 +26,7 @@
   "type": "module",
   "dependencies": {
     "express": "^4.17.1",
+    "firebase": "^8.7.1",
     "istanbul-reports": "^3.0.2",
     "jquery": "^3.5.1",
     "path": "^0.12.7"
@@ -38,6 +39,7 @@
     "@testing-library/user-event": "^12.0.11",
     "babel-jest": "^26.1.0",
     "jest": "^26.1.0",
+    "jest-cli": "^26.6.3",
     "jest-html-reporter": "^3.4.1"
   }
 }
