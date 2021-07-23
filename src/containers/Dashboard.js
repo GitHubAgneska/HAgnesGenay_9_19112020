@@ -106,7 +106,7 @@ export default class {
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
       this.counter ++
-      if (this.counter === 2) this.counter = 0;
+      
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
@@ -149,12 +149,11 @@ export default class {
 
     // if (this.counter % 2 === 0) {
     // category opens / close + arrow up / down  ---> if click count = even | odd 
-    if (this.counter || this.counter % 2 === 0 ) {
+    if (this.counter === 0 || this.counter % 2 === 0 ) {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
       .html(cards(filteredBills(bills, getStatus(this.index))))
       this.counter ++
-      if (this.counter === 2) this.counter = 0;
       
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})

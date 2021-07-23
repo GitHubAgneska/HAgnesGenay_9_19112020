@@ -25,7 +25,7 @@ export default class NewBill {
     this.firestore.storage
       .ref(`justificatifs/${fileName}`)
       .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL())
+      .then(snapshot => snapshot.ref.getDownloadURL()) //  firestore sents back an url for image location
       .then(url => {
         this.fileUrl = url
         this.fileName = fileName
