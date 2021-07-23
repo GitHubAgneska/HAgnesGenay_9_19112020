@@ -6,16 +6,10 @@ import userEvent from '@testing-library/user-event'
 import BillsUI from "../views/BillsUI.js"
 import Bill from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
-import VerticalLayout from "../views/VerticalLayout"
-import {ROUTES, ROUTES_PATH} from "../constants/routes"
-import router from "../app/Router.js"
-import Dashboard, {filteredBills, cards} from "../containers/Dashboard.js"
-import DashboardUI from "../views/DashboardUI.js"
-import NewBillUI from "../views/NewBillUI.js"
-import Actions from "../views/Actions.js"
+import {ROUTES} from "../constants/routes"
+import Dashboard from "../containers/Dashboard.js"
 import firebase from "../__mocks__/firebase"
 import { localStorageMock } from "../__mocks__/localStorage.js"
-import {handleClickIconEye } from  "../containers/Bills"
 
 
 describe("Given I am connected as an employee", () => {
@@ -40,7 +34,7 @@ describe("Given I am connected as an employee", () => {
       expect(dates).toEqual(datesSorted)
     })
 
-    // UI ?
+
     test("Then there should be a /'nouvelle note de frais'/ button", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -133,8 +127,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       const billUrl = eye.getAttributeNames('data-bill-url')
       eye.addEventListener('click', handleClickIconEye)
       userEvent.click(eye)
-
-      const modale = screen.getByTestId('modaleFileEmployee')
+      $.fn.modal = jest.fn();
       const image = screen.findByAltText('bill-img')
       expect(image.src).not.toBeNull()
       expect(image.src).toBe(billUrl.value)

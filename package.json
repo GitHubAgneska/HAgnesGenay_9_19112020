@@ -7,13 +7,6 @@
     "setupFiles": [
       "./setup-jest.js"
     ],
-    "collectCoverage": true,
-    "coverageReporters": [
-      "json",
-      "html",
-      "lcov",
-      "text"
-    ],
     "collectCoverageFrom": [
       "**/*.{js,jsx}",
       "!**/app/**",

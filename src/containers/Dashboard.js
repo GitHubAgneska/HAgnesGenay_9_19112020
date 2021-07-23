@@ -6,6 +6,7 @@ import USERS_TEST from '../constants/usersTest.js'
 import Logout from "./Logout.js"
 
 export const filteredBills = (data, status) => {
+  
   return (data && data.length) ?
     data.filter(bill => {
 
@@ -13,10 +14,12 @@ export const filteredBills = (data, status) => {
 
       // in jest environment
       if (typeof jest !== 'undefined') {
+        // filtrer les bills par status
         selectCondition = (bill.status === status)
       } else {
         // in prod environment
         const userEmail = JSON.parse(localStorage.getItem("user")).email
+        // filtrer les bills par status et par user email
         selectCondition =
           (bill.status === status) &&
           [...USERS_TEST, userEmail].includes(bill.email)
@@ -85,11 +88,17 @@ export default class {
     if (typeof $('#modaleFileAdmin1').modal === 'function') $('#modaleFileAdmin1').modal('show')
   }
 
+
+  // handleShow =>
+  // bills.forEach(bill => {
+  //   $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+  // })
   handleEditTicket(e, bill, bills) {
     if (this.counter === undefined || this.id !== bill.id) this.counter = 0
     if (this.id === undefined || this.id !== bill.id) this.id = bill.id
-    //if (this.counter) {
-    if (this.counter % 2 === 0 || this.counter) {
+    // if (this.counter % 2 === 0) {
+    if (this.counter || this.counter % 2 === 0) {
+    
       bills.forEach(b => {
         $(`#open-bill${b.id}`).css({ background: '#0D5AE5' })
       })
@@ -97,6 +106,7 @@ export default class {
       $('.dashboard-right-container div').html(DashboardFormUI(bill))
       $('.vertical-navbar').css({ height: '150vh' })
       this.counter ++
+      if (this.counter === 2) this.counter = 0;
     } else {
       $(`#open-bill${bill.id}`).css({ background: '#0D5AE5' })
 
@@ -131,16 +141,21 @@ export default class {
     this.onNavigate(ROUTES_PATH['Dashboard'])
   }
 
+  //  $('#arrow-icon1').click((e) => this.handleShowTickets(e, bills, 1))
   handleShowTickets(e, bills, index) {
-    console.log('index=', index)
+    console.log('index=', index) // index = category index
     if (this.counter === undefined || this.index !== index) this.counter = 0
     if (this.index === undefined || this.index !== index) this.index = index
-    // if (this.counter ) {
-    if (this.counter % 2 === 0 || this.counter) {
+
+    // if (this.counter % 2 === 0) {
+    // category opens / close + arrow up / down  ---> if click count = even | odd 
+    if (this.counter || this.counter % 2 === 0 ) {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(0deg)'})
       $(`#status-bills-container${this.index}`)
-        .html(cards(filteredBills(bills, getStatus(this.index))))
+      .html(cards(filteredBills(bills, getStatus(this.index))))
       this.counter ++
+      if (this.counter === 2) this.counter = 0;
+      
     } else {
       $(`#arrow-icon${this.index}`).css({ transform: 'rotate(90deg)'})
       $(`#status-bills-container${this.index}`)
@@ -151,9 +166,7 @@ export default class {
     bills.forEach(bill => {
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
-    console.log('COUNTER==', this.counter);
     return bills
-
   }
 
   // not need to cover this function by tests

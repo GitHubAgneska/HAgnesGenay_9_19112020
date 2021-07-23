@@ -14,7 +14,6 @@ describe('Given I am connected as an Admin', () => {
         test('Then, filteredBills by pending status should return 1 bill', () => {
             const filtered_bills = filteredBills(bills, "pending")
             expect(filtered_bills.length).toBe(1)
-            expect(typeof jest !== undefined ).toBe(true)
         })
     })
     describe('When I am on Dashboard page, there are bills, and there is one accepted', () => {
@@ -45,7 +44,7 @@ describe('Given I am connected as an Admin', () => {
     })
 
     describe('When I am on Dashboard page and I click on arrow', () => {
-        test('Then, tickets list should be unfolding, and cards should contain first and lastname', async () => {
+        test('Then, tickets list should be unfolding, and cars should contain first and lastname', async () => {
 
             const onNavigate = (pathname) => {
                 document.body.innerHTML = ROUTES({pathname})
@@ -76,7 +75,7 @@ describe('Given I am connected as an Admin', () => {
             icon1.addEventListener('click', handleShowTickets1)
             userEvent.click(icon1)
             expect(handleShowTickets1).toHaveBeenCalled()
-            // userEvent.click(icon1)
+            userEvent.click(icon1)
 
             icon2.addEventListener('click', handleShowTickets2)
             userEvent.click(icon2)
@@ -114,7 +113,7 @@ describe('Given I am connected as an Admin', () => {
             userEvent.click(iconEdit)
             expect(handleEditTicket).toHaveBeenCalled()
             userEvent.click(iconEdit)
-            expect(handleEditTicket).toHaveBeenCalled() // twice ?
+            expect(handleEditTicket).toHaveBeenCalled()
         })
     })
 
