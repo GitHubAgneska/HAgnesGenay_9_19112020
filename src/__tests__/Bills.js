@@ -37,6 +37,26 @@ describe("Given I am connected as an employee", () => {
       const nouvNoteBtn = screen.getByTestId('btn-new-bill')
       expect(nouvNoteBtn).toBeTruthy()
     })
+    
+    // this will test  :  'if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)'
+    // => scenario where the event listener does not get added to the btn (bills class constructor)
+    test("Then the /'nouvelle note de frais'/ button should call handleClickNewBill function", () => { 
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
+      const bill = new Bill({
+        document,
+        onNavigate,
+        firestore: null,
+        localStorage: window.localStorage
+      })
+      const nouvNoteBtn = screen.getByTestId('btn-new-bill')
+      // -->  NOT ADDING EVENT LISTENER ON BTN <--- // 
+      const handleClickNewBill = jest.fn(bill.handleClickNewBill) 
+      userEvent.click(nouvNoteBtn) 
+      expect(handleClickNewBill).not.toHaveBeenCalled()
+      expect(screen.getByText('Envoyer une note de frais')).toBeFalsy()
+    })
   })
 })
 
@@ -45,8 +65,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
     test("Then I should be sent to newBill page", () => {
 
       // we have to mock navigation to test it
-      const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })}
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
 
       Object.defineProperty(window, 'localStorage', {value: localStorageMock})
       window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
