@@ -21,8 +21,6 @@ describe("Given I am connected as an employee", () => {
       const billsList = screen.getByTestId('tbody')
       expect(billsList).toBeTruthy();
     })
-
-
     // use firebase with 'Ordering by a specified child key' instead ? 
     //  https://firebase.google.com/docs/database/admin/retrieve-data
     test("Then bills should be ordered from earliest to latest", () => {
@@ -33,8 +31,6 @@ describe("Given I am connected as an employee", () => {
       const datesSorted = [...dates].sort(antiChrono)
       expect(dates).toEqual(datesSorted)
     })
-
-
     test("Then there should be a /'nouvelle note de frais'/ button", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
@@ -108,7 +104,6 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
 describe("Given I am connected as an employee and I am on bills page", () => {
   describe('When I have clicked on the eye-icon of first bill and a modal is open', () => {
-    
     test("Then an image should be displayed", async() => {
       
       const html = BillsUI({data: bills})

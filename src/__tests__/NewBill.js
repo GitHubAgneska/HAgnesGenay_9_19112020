@@ -21,7 +21,7 @@ window.localStorage.setItem(
 
     describe("Given I am connected as an employee", () => {
         describe("When I am on NewBill Page", () => {
-            test("Then post should fail if required fields are not filled out", () => {
+            test("Then post should fail if required fields are not filled out", () => { // actually, if sending an empty object (not testing fields are filled out)
                 const html = NewBillUI()
                 document.body.innerHTML = html
                 
@@ -69,7 +69,6 @@ window.localStorage.setItem(
                 const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
                 window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
                 
-                const firestoreStorage = firebase // => is a mock
                 const newbill = new NewBill({document, onNavigate, firestore:null, localStorage: window.localStorage})
                 
                 const fakeNewBill = {
@@ -85,15 +84,31 @@ window.localStorage.setItem(
                     fileUrl:  bills[0].fileUrl,
                     fileName:  bills[0].fileName,
                     status:  bills[0].status
-                    
                 }
+                screen.getByTestId("expense-type").value =  bills[0].type
+                screen.getByTestId("expense-name").value = bills[0].name
+                screen.getByTestId("datepicker").value = bills[0].date
+                screen.getByTestId("amount").value = bills[0].amount
+                screen.getByTestId("vat").value = bills[0].vat
+                screen.getByTestId("pct").value = bills[0].pct
+                screen.getByTestId("commentary").value = bills[0].commentary
+
                 const formNewBill = screen.getByTestId('form-new-bill') 
                 const handleSubmit = jest.fn(newbill.handleSubmit)
+                const createBill = jest.fn(newbill.createBill)
                 formNewBill.addEventListener('submit', handleSubmit)
-            
                 fireEvent.submit(formNewBill)
-                expect(handleSubmit).toHaveBeenCalled()
                 
+                expect(handleSubmit).toHaveBeenCalled()
+                expect(handleSubmit.mock.results).toEqual(
+                    [
+                        {   type: "return", 
+                            value: { email:bills[0].email, type: bills[0].type, name: bills[0].name, amount: bills[0].amount, date: bills[0].date, vat:bills[0].vat, pct: bills[0].pct, commentary: bills[0].commentary, fileUrl: bills[0].fileUrl, fileName: bills[0].fileName},
+                            value : createBill()
+                        }])
+                })
+                test("Then it should render Bills page", () => {
+                expect(screen.getByText('Mes notes de frais')).toBeTruthy()
             })
         })
     })

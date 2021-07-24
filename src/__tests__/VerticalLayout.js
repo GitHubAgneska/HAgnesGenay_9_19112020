@@ -34,6 +34,8 @@ describe("Given I am connected as Employee", () => {
       expect(screen.getByTestId("icon-window")).toBeTruthy();
       expect(screen.getByTestId("icon-mail")).toBeTruthy();
     });
+
+    
     test("Then bill icon in vertical layout should be highlighted", () => {
       window.location.hash = "#employee/bills";
       document.body.innerHTML = `<div id='root'></div>`;
