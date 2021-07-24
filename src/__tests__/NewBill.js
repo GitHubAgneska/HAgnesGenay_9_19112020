@@ -71,20 +71,6 @@ window.localStorage.setItem(
                 
                 const newbill = new NewBill({document, onNavigate, firestore:null, localStorage: window.localStorage})
                 
-                const fakeNewBill = {
-                    
-                    email : bills[0].email,
-                    type:  bills[0].type,
-                    name:   bills[0].name,
-                    amount:  bills[0].amount,
-                    date:  bills[0].date,
-                    vat:  bills[0].vat,
-                    pct: bills[0].pct,
-                    commentary: bills[0].commentary,
-                    fileUrl:  bills[0].fileUrl,
-                    fileName:  bills[0].fileName,
-                    status:  bills[0].status
-                }
                 screen.getByTestId("expense-type").value =  bills[0].type
                 screen.getByTestId("expense-name").value = bills[0].name
                 screen.getByTestId("datepicker").value = bills[0].date
