@@ -96,17 +96,54 @@ describe("Given I am connected as an employee and I am on bills page", () => {
   test("Then there should be an eye icon on each bill", () => { 
     const html = BillsUI({ data: bills })
     document.body.innerHTML = html
-    const allEyeIcons = screen.getAllByTestId('icon-eye')
-    const allEyeIconsCount = allEyeIcons.length
+    const eye = screen.getAllByTestId('icon-eye')
+    const eyeCount = eye.length
     const billsAmount = bills.length
-  
-    expect(allEyeIconsCount).toEqual(billsAmount)
-    expect(allEyeIcons).toBeTruthy()
+    
+    expect(eyeCount).toEqual(billsAmount)
+    expect(eye).toBeTruthy()
   })
+
+  // this will test : 
+  //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
+  //  if (iconEye) iconEye.forEach(icon => {
+  //   icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
+  // })
+  // SCENARIO where the icon path is not correct => so, no eye icon displayed and no event listener added
+  test("Then test should fail if eye is not displayed on each bill", () => { 
+    const billUrl = '/fakeUrl'
+    const eyeBlueIcon = ''
+    // const html = Actions(billUrl)
+    const html = 
+    `<div class="icon-actions">
+        <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
+        ${eyeBlueIcon}
+        </div>
+    </div>`
+    document.body.innerHTML = html
+    const eyes = screen.getAllByTestId('icon-eye')
+
+    eyes.forEach(eye => { 
+      const icon = eye.value;
+      const handleClickIconEye = jest.fn()
+      if (icon) { 
+        eye.addEventListener('click', handleClickIconEye)
+        userEvent.click(eye)
+      }
+      expect(icon).toBeUndefined()
+      // const svg = HTMLElement
+      // expect(icon).not.toContainHTML(svg)
+      expect(eye.childElementCount).toEqual(0);
+      expect(handleClickIconEye).not.toHaveBeenCalled()
+    })
+    
+  })
+
   test("Then there should be an eye icon on any bill", () => { 
     const html = BillsUI({ data: bills })
     document.body.innerHTML = html
     const eye = screen.getAllByTestId('icon-eye')[1]
+    
     expect(eye).toBeTruthy()
   })
 
