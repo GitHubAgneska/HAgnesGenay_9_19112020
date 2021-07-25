@@ -90,58 +90,40 @@ describe("Given I am connected as an employee and I am on bills page", () => {
   })
 })
 
-describe("Given I am connected as an employee and I am on bills page", () => {
-  describe('When bill data is passed to DashboardUI', () => {
-    test("Then an eye icon should be passed to each bill alongside fileUrl", async()=> {
+describe("Given I am connected as an employee", () => {
+  describe('When I am on Bills page and there are bills', () => {
+    test("Then there should be an eye icon on each bill", () => { 
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+      const eye = screen.getAllByTestId('icon-eye')
+      const eyeCount = eye.length
+      const billsAmount = bills.length
       
+      expect(eyeCount).toEqual(billsAmount)
+      expect(eye).toBeTruthy()
+    })
+
+    test("Then test should fail if no eye icon is found in its parent container", () => {
       const billUrl = '/fakeUrl'
-      const eyeBlueIcon = "../assets/svg/eye_blue.js"
-      
-      const actions = 
+      const html = 
       `<div class="icon-actions">
-          <div id="eye"  data-bill-url=${billUrl}>
-          ${eyeBlueIcon}
+          <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
           </div>
       </div>`
-      const html = BillsUI({data: bills})
       document.body.innerHTML = html
-
-      // expect(actions(billUrl)).toBeCalled()
-      // expect(screen.getByTestId('icon-eye')).toBeCalled()
+      const eyes = screen.getAllByTestId('icon-eye')
+      eyes.forEach(eye => { 
+        const icon = eye.value;
+        const handleClickIconEye = jest.fn()
+        if (icon) { 
+          eye.addEventListener('click', handleClickIconEye)
+          userEvent.click(eye)
+        }
+        expect(icon).toBeUndefined()
+        expect(eye.childElementCount).toEqual(0);
+        expect(handleClickIconEye).not.toHaveBeenCalled()
+      })
     })
-  })
-  test("Then there should be an eye icon on each bill", () => { 
-    const html = BillsUI({ data: bills })
-    document.body.innerHTML = html
-    const eye = screen.getAllByTestId('icon-eye')
-    const eyeCount = eye.length
-    const billsAmount = bills.length
-    
-    expect(eyeCount).toEqual(billsAmount)
-    expect(eye).toBeTruthy()
-  })
-
-  test("Then test should fail if no eye icon is found in its parent container", () => {
-    const billUrl = '/fakeUrl'
-    const html = 
-    `<div class="icon-actions">
-        <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
-        </div>
-    </div>`
-    document.body.innerHTML = html
-    const eyes = screen.getAllByTestId('icon-eye')
-    eyes.forEach(eye => { 
-      const icon = eye.value;
-      const handleClickIconEye = jest.fn()
-      if (icon) { 
-        eye.addEventListener('click', handleClickIconEye)
-        userEvent.click(eye)
-      }
-      expect(icon).toBeUndefined()
-      expect(eye.childElementCount).toEqual(0);
-      expect(handleClickIconEye).not.toHaveBeenCalled()
-    })
-  })
   // following will test : 
   //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
   //  if (iconEye) iconEye.forEach(icon => {
