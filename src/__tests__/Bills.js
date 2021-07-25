@@ -7,7 +7,6 @@ import BillsUI from "../views/BillsUI.js"
 import Bill from "../containers/Bills"
 import { bills } from "../fixtures/bills.js"
 import {ROUTES} from "../constants/routes"
-import Dashboard from "../containers/Dashboard.js"
 import firebase from "../__mocks__/firebase"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 
@@ -38,7 +37,7 @@ describe("Given I am connected as an employee", () => {
       expect(nouvNoteBtn).toBeTruthy()
     })
     
-    // this will test  :  'if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)'
+    // following will test  :  'if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)'
     // => scenario where the event listener does not get added to the btn (in bills class constructor)
     test("Then the /'nouvelle note de frais'/ button should fail to call handleClickNewBill if event not added", () => { 
       const html = BillsUI({ data: bills })
@@ -143,7 +142,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(handleClickIconEye).not.toHaveBeenCalled()
     })
   })
-  // this will test : 
+  // following will test : 
   //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
   //  if (iconEye) iconEye.forEach(icon => {
   //   icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
@@ -177,7 +176,6 @@ describe("Given I am connected as an employee and I am on bills page", () => {
     })
     
   })
-
   test("Then there should be an eye icon on any bill", () => { 
     const html = BillsUI({ data: bills })
     document.body.innerHTML = html
@@ -185,7 +183,6 @@ describe("Given I am connected as an employee and I am on bills page", () => {
     
     expect(eye).toBeTruthy()
   })
-
 
   describe('When I click on the eye icon of a bill', () => {
     // this will test  :  iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
@@ -204,34 +201,28 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(handleClickIconEye).toHaveBeenCalledTimes(allEyeIconsCount)
     })
 
-    // this will test  :  
+    // following will test  :  
     //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     //  if (iconEye) iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
-    
     // => scenario where the event listener does not get added to ANY eye icon (in bills class constructor)
     test("Then the icon eye btn should call handleClickIconEye' function", () => {
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
-
       const allEyeIcons = screen.getAllByTestId('icon-eye')
       // -->  NOT ADDING EVENT LISTENER ON ICON <--- // 
       const allEyeIconsCount = allEyeIcons.length
-
       const handleClickIconEye = jest.fn()
+
       expect(handleClickIconEye).not.toHaveBeenCalled()
       expect(handleClickIconEye).not.toHaveBeenCalledTimes(allEyeIconsCount)
     })
 
-
-
     test("Then a modal should open", () => {
-  
       Object.defineProperty(window, 'localStorage', {value: localStorageMock})
       window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
-
       const bill = new Bill({ document, onNavigate, firestore: null, localStorage: window.localStorage })
 
       const eye = screen.getAllByTestId('icon-eye')[1]
@@ -247,31 +238,19 @@ describe("Given I am connected as an employee and I am on bills page", () => {
       expect(modale).toBeTruthy()
       expect(screen.getByText('Justificatif')).toBeTruthy()
     })
-  })
-})
-
-
-describe("Given I am connected as an employee and I am on bills page", () => {
-  describe('When I have clicked on the eye-icon of first bill and a modal is open', () => {
     test("Then an image should be displayed", async() => {
-      
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
-      const dashboard = new Dashboard({
-        document,
-        onNavigate,
-        firestore:null,
-        bills,
-        localStorage: window.localStorage
-    })
-
-      const handleClickIconEye = jest.fn(dashboard.handleClickIconEye)
+      const bill = new Bill({ document, onNavigate, firestore: null, localStorage: window.localStorage })
+      
       const eye = screen.getAllByTestId('icon-eye')[1]
-      const billUrl = eye.getAttributeNames('data-bill-url')
-      eye.addEventListener('click', handleClickIconEye)
-      userEvent.click(eye)
       $.fn.modal = jest.fn();
+      const handleClickIconEye = jest.fn(bill.handleClickIconEye(eye))
+      eye.addEventListener('click', handleClickIconEye)
+      const billUrl = eye.getAttributeNames('data-bill-url')
+      userEvent.click(eye)
+
       const image = screen.findByAltText('bill-img')
       expect(image.src).not.toBeNull()
       expect(image.src).toBe(billUrl.value)

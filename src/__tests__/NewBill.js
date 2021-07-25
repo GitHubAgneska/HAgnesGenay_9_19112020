@@ -93,7 +93,7 @@ window.localStorage.setItem(
                             value : createBill()
                         }])
                 })
-                test("Then it should render Bills page", () => {
+            test("Then it should render Bills page", () => {
                 expect(screen.getByText('Mes notes de frais')).toBeTruthy()
             })
         })

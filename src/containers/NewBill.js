@@ -13,15 +13,18 @@ export default class NewBill {
     formNewBill.addEventListener("submit", this.handleSubmit)
     const file = this.document.querySelector(`input[data-testid="file"]`)
     file.addEventListener("change", this.handleChangeFile)
-    this.fileUrl = null
-    this.fileName = null
+    this.fileUrl = 'abcd'
+    this.fileName = 'www'
     new Logout({ document, localStorage, onNavigate })
   }
   handleChangeFile = e => {
-    const file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    
+    let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    //file = e.currentTarget
+    const inputFile = this.document.querySelector("Input[type='file']")
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    if (this.firestore) // added
+    
     this.firestore.storage
       .ref(`justificatifs/${fileName}`)
       .put(file)
@@ -30,6 +33,7 @@ export default class NewBill {
         this.fileUrl = url
         this.fileName = fileName
       })
+      console.log( this.fileName, this.fileUrl) // !! WORKS ONLY WHEN A SECOND IMAGE IS SELECTED, OTHERWISE DEFAULT CONSTRUCTOR VALUES
   }
   handleSubmit = e => {
     e.preventDefault()
