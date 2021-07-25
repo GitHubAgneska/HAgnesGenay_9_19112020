@@ -20,14 +20,14 @@ export default class NewBill {
   handleChangeFile = e => {
     
     let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
-    //file = e.currentTarget
-    const inputFile = this.document.querySelector("Input[type='file']")
+    let img = e.target.value
+    // console.log(img) // C:\fakepath\Screen Shot 2021-05-29 at 11.22.15-fullpage.png
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
     
     this.firestore.storage
-      .ref(`justificatifs/${fileName}`)
-      .put(file)
+    .ref(`justificatifs/${fileName}`)
+    .put(file)
       .then(snapshot => snapshot.ref.getDownloadURL()) //  firestore sents back an url for image location
       .then(url => {
         this.fileUrl = url

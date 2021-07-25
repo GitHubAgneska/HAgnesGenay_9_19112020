@@ -59,7 +59,36 @@ window.localStorage.setItem(
                 expect(fileInput.files[0].name).toBe(fileMock)
             })
         })
-    })
+    }) 
+    describe("Given I am connected as an employee", () => {
+        describe("When I am on NewBill Page and have selected an image to upload", () => {
+            test("Then firebase should be called through handleChangeFile function and return an url", () => {
+                const html = NewBillUI()
+                document.body.innerHTML = html
+                const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) } 
+                
+                const newbill = new NewBill({document, onNavigate, localStorage: window.localStorage})
+                const fileInput = screen.getByTestId('file')
+                const handleChangeFile = jest.fn(newbill.handleChangeFile)
+                fileInput.addEventListener('change', handleChangeFile,  { once: true })
+                const fileMock = 'abcdef890.png'
+                fireEvent.change(fileInput, { target: { files: [new File( [fileMock], fileMock)]} },)
+                const filePath = e.target.value.split(/\\/g)
+                const fileName = filePath[filePath.length-1]
+                
+
+
+                const getSpy = jest.spyOn(firebase.storage, "post")
+                var ref = firebase.storage().ref("justificatifs/");
+                const newUrl = await firebase.get()
+                expect(getSpy).toHaveBeenCalledTimes(1)
+
+                expect(handleChangeFile).toHaveBeenCalled()
+                expect(fileInput.files[0].name).toBe(fileMock)
+                expect 
+                })
+            })
+        }) 
 
     describe("Given I am connected as an employee", () => {
         describe("When I am on NewBill Page, have made a new bill and submit it", () => {

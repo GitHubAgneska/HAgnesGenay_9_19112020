@@ -152,6 +152,13 @@ describe("Given I am connected as an employee and I am on bills page", () => {
     const billUrl = '/fakeUrl'
     const eyeBlueIcon = ''
     // const html = Actions(billUrl)
+    const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
+      const bill = new Bill({
+        document,
+        onNavigate,
+        firestore: null,
+        localStorage: window.localStorage
+      })
     const html = 
     `<div class="icon-actions">
         <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
@@ -163,7 +170,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 
     eyes.forEach(eye => { 
       const icon = eye.value;
-      const handleClickIconEye = jest.fn()
+      const handleClickIconEye = jest.fn(bill.handleClickIconEye) 
       if (icon) { 
         eye.addEventListener('click', handleClickIconEye)
         userEvent.click(eye)
@@ -179,7 +186,7 @@ describe("Given I am connected as an employee and I am on bills page", () => {
   test("Then there should be an eye icon on any bill", () => { 
     const html = BillsUI({ data: bills })
     document.body.innerHTML = html
-    const eye = screen.getAllByTestId('icon-eye')[1]
+    const eye = screen.getAllByTestId('icon-eye')
     
     expect(eye).toBeTruthy()
   })
@@ -190,8 +197,16 @@ describe("Given I am connected as an employee and I am on bills page", () => {
     test("Then any eye icon should call handleClickIconEye' function", () => {
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
+      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
+      const bill = new Bill({
+        document,
+        onNavigate,
+        firestore: null,
+        localStorage: window.localStorage
+      })
       const allEyeIcons = screen.getAllByTestId('icon-eye')
       const allEyeIconsCount = allEyeIcons.length
+      // const handleClickIconEye = jest.fn(bill.handleClickIconEye) 
       const handleClickIconEye = jest.fn() // don't call the actual function ( jest.fn(bill.handleClickIconEye(eye)))
       $.fn.modal = jest.fn();
 
