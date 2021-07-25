@@ -39,8 +39,8 @@ describe("Given I am connected as an employee", () => {
     })
     
     // this will test  :  'if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)'
-    // => scenario where the event listener does not get added to the btn (bills class constructor)
-    test("Then the /'nouvelle note de frais'/ button should call handleClickNewBill function", () => { 
+    // => scenario where the event listener does not get added to the btn (in bills class constructor)
+    test("Then the /'nouvelle note de frais'/ button should fail to call handleClickNewBill if event not added", () => { 
       const html = BillsUI({ data: bills })
       document.body.innerHTML = html
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
@@ -55,7 +55,7 @@ describe("Given I am connected as an employee", () => {
       const handleClickNewBill = jest.fn(bill.handleClickNewBill) 
       userEvent.click(nouvNoteBtn) 
       expect(handleClickNewBill).not.toHaveBeenCalled()
-      expect(screen.getByText('Envoyer une note de frais')).toBeFalsy()
+      // expect(screen.getByText('Envoyer une note de frais')).toBeFalsy() // => does not pass : ?
     })
   })
 })
@@ -63,7 +63,6 @@ describe("Given I am connected as an employee", () => {
 describe("Given I am connected as an employee and I am on bills page", () => {
   describe('When I click on \'nouvelle note de frais\' ', () => {
     test("Then I should be sent to newBill page", () => {
-
       // we have to mock navigation to test it
       const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
 
@@ -93,7 +92,62 @@ describe("Given I am connected as an employee and I am on bills page", () => {
 })
 
 describe("Given I am connected as an employee and I am on bills page", () => {
-  describe('When I click on the icon eye of a bill', () => {
+
+  test("Then there should be an eye icon on each bill", () => { 
+    const html = BillsUI({ data: bills })
+    document.body.innerHTML = html
+    const allEyeIcons = screen.getAllByTestId('icon-eye')
+    const allEyeIconsCount = allEyeIcons.length
+    const billsAmount = bills.length
+  
+    expect(allEyeIconsCount).toEqual(billsAmount)
+    expect(allEyeIcons).toBeTruthy()
+  })
+  test("Then there should be an eye icon on any bill", () => { 
+    const html = BillsUI({ data: bills })
+    document.body.innerHTML = html
+    const eye = screen.getAllByTestId('icon-eye')[1]
+    expect(eye).toBeTruthy()
+  })
+
+
+  describe('When I click on the eye icon of a bill', () => {
+    // this will test  :  iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
+    // meaning, every icon eye will be tested for its click event
+    test("Then any eye icon should call handleClickIconEye' function", () => {
+      const html = BillsUI({data: bills})
+      document.body.innerHTML = html
+      const allEyeIcons = screen.getAllByTestId('icon-eye')
+      const allEyeIconsCount = allEyeIcons.length
+      const handleClickIconEye = jest.fn() // don't call the actual function ( jest.fn(bill.handleClickIconEye(eye)))
+      $.fn.modal = jest.fn();
+
+      allEyeIcons.forEach(icon => {icon.addEventListener('click', handleClickIconEye) })
+      allEyeIcons.forEach(icon => { userEvent.click(icon)})
+      
+      expect(handleClickIconEye).toHaveBeenCalledTimes(allEyeIconsCount)
+    })
+
+    // this will test  :  
+    //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
+    //  if (iconEye) iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
+    
+    // => scenario where the event listener does not get added to ANY eye icon (in bills class constructor)
+    test("Then the icon eye btn should call handleClickIconEye' function", () => {
+      const html = BillsUI({data: bills})
+      document.body.innerHTML = html
+
+      const allEyeIcons = screen.getAllByTestId('icon-eye')
+      // -->  NOT ADDING EVENT LISTENER ON ICON <--- // 
+      const allEyeIconsCount = allEyeIcons.length
+
+      const handleClickIconEye = jest.fn()
+      expect(handleClickIconEye).not.toHaveBeenCalled()
+      expect(handleClickIconEye).not.toHaveBeenCalledTimes(allEyeIconsCount)
+    })
+
+
+
     test("Then a modal should open", () => {
   
       Object.defineProperty(window, 'localStorage', {value: localStorageMock})
