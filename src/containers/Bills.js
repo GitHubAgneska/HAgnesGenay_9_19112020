@@ -11,9 +11,14 @@ export default class {
     const buttonNewBill = document.querySelector(`button[data-testid="btn-new-bill"]`)
     if (buttonNewBill) buttonNewBill.addEventListener('click', this.handleClickNewBill)
     const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
-    if (iconEye) iconEye.forEach(icon => {
-      icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
+    if (iconEye ) { 
+      iconEye.forEach(icon => {
+        if ( icon.childElementCount > 0) {
+          icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
+        }  else { throw new Error('error with eye icon')}
     })
+    } else { throw new Error('error with eye icon')}
+    
     new Logout({ document, localStorage, onNavigate })
   }
 

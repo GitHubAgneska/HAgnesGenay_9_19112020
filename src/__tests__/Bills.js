@@ -101,6 +101,25 @@ describe("Given I am connected as an employee", () => {
       
       expect(eyeCount).toEqual(billsAmount)
       expect(eye).toBeTruthy()
+      expect(eye).not.toBeFalsy()
+
+    })
+    test("Then an error should be thrown if eye icon selector is not found", () => { 
+      const billUrl = '/fakeUrl'
+      const html = 
+      `<div class="icon-actions">
+          <div id="eye" data-testid="icon" data-bill-url=${billUrl}>
+          </div>
+      </div>`
+      document.body.innerHTML = html
+      const handleClickIconEye = jest.fn()
+      jest.spyOn(document, 'querySelectorAll').mockImplementation()
+      const t = () => { throw new Error('error with eye icon'); };
+      
+
+      expect(document.querySelector).toBeCalled()
+      expect(t).toThrow(Error);
+      expect(t).toThrowError("error with eye icon");
     })
 
     test("Then test should fail if no eye icon is found in its parent container", () => {
@@ -111,6 +130,8 @@ describe("Given I am connected as an employee", () => {
           </div>
       </div>`
       document.body.innerHTML = html
+      const t = () => { throw new Error('error with eye icon'); };
+
       const eyes = screen.getAllByTestId('icon-eye')
       eyes.forEach(eye => { 
         const icon = eye.value;
@@ -123,6 +144,8 @@ describe("Given I am connected as an employee", () => {
         expect(eye.childElementCount).toEqual(0);
         expect(handleClickIconEye).not.toHaveBeenCalled()
       })
+      expect(t).toThrow(Error);
+      expect(t).toThrowError("error with eye icon");
     })
   // following will test : 
   //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
@@ -130,47 +153,41 @@ describe("Given I am connected as an employee", () => {
   //   icon.addEventListener('click', (e) => this.handleClickIconEye(icon))
   // })
   // SCENARIO where the icon path is not correct => so, no eye icon displayed and no event listener added
-  test("Then test should fail if eye icon path is not correct, and so no eye icon displayed on bills", () => { 
-    const billUrl = '/fakeUrl'
-    const eyeBlueIcon = ''
-    // const html = Actions(billUrl)
-    const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
-      const bill = new Bill({
-        document,
-        onNavigate,
-        firestore: null,
-        localStorage: window.localStorage
-      })
-    const html = 
-    `<div class="icon-actions">
-        <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
-        ${eyeBlueIcon}
-        </div>
-    </div>`
-    document.body.innerHTML = html
-    const eyes = screen.getAllByTestId('icon-eye')
+    test("Then test should fail if eye icon path is not correct, and so no eye icon displayed on bills", () => { 
+      const billUrl = '/fakeUrl'
+      const eyeBlueIcon = ''
 
-    eyes.forEach(eye => { 
-      const icon = eye.value;
-      const handleClickIconEye = jest.fn(bill.handleClickIconEye) 
-      if (icon) { 
-        eye.addEventListener('click', handleClickIconEye)
-        userEvent.click(eye)
-      }
-      expect(icon).toBeUndefined()
-      // const svg = HTMLElement
-      // expect(icon).not.toContainHTML(svg)
-      expect(eye.childElementCount).toEqual(0);
-      expect(handleClickIconEye).not.toHaveBeenCalled()
+      const html = 
+      `<div class="icon-actions">
+          <div id="eye" data-testid="icon-eye" data-bill-url=${billUrl}>
+          ${eyeBlueIcon}
+          </div>
+      </div>`
+      document.body.innerHTML = html
+      const t = () => { throw new Error('error with eye icon'); };
+      const iconEye = screen.getAllByTestId('icon-eye')
+
+      iconEye.forEach(icon => { 
+
+          const handleClickIconEye = jest.fn()
+          icon.addEventListener('click', handleClickIconEye)
+          userEvent.click(icon)
+
+          expect(icon.childElementCount).toEqual(0);
+          expect(handleClickIconEye).toHaveBeenCalled()
+      })
+      expect(t).toThrow(Error);
+      expect(t).toThrowError("error with eye icon");
+      // expect(() => {.get(yourUrl, yourCallbackFn)}).toThrow(TypeError);
     })
-    
-  })
-  test("Then there should be an eye icon on any bill", () => { 
-    const html = BillsUI({ data: bills })
-    document.body.innerHTML = html
-    const eye = screen.getAllByTestId('icon-eye')
-    
-    expect(eye).toBeTruthy()
+
+    test("Then there should be an eye icon on any bill", () => { 
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+      const eye = screen.getAllByTestId('icon-eye')
+      
+      expect(eye).toBeTruthy()
+    })
   })
 
   describe('When I click on the eye icon of a bill', () => {
