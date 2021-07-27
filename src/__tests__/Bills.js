@@ -117,7 +117,6 @@ describe("Given I am connected as an employee", () => {
       const t = () => { throw new Error('error with eye icon'); };
       
 
-      expect(document.querySelector).toBeCalled()
       expect(t).toThrow(Error);
       expect(t).toThrowError("error with eye icon");
     })
@@ -178,7 +177,6 @@ describe("Given I am connected as an employee", () => {
       })
       expect(t).toThrow(Error);
       expect(t).toThrowError("error with eye icon");
-      // expect(() => {.get(yourUrl, yourCallbackFn)}).toThrow(TypeError);
     })
 
     test("Then there should be an eye icon on any bill", () => { 
@@ -193,32 +191,41 @@ describe("Given I am connected as an employee", () => {
   describe('When I click on the eye icon of a bill', () => {
     // this will test  :  iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
     // meaning, every icon eye will be tested for its click event
-    test("Then any eye icon should call handleClickIconEye' function", () => {
+    test("Then any eye icon should call handleClickIconEye' function", async() => {
+
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
-      const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({ pathname })}
-      const bill = new Bill({
-        document,
-        onNavigate,
-        firestore: null,
-        localStorage: window.localStorage
-      })
-      const allEyeIcons = screen.getAllByTestId('icon-eye')
+      const t = () => { throw new Error('error with eye icon'); };
+      const allEyeIcons = screen.findAllByTestId('icon-eye')
       const allEyeIconsCount = allEyeIcons.length
       // const handleClickIconEye = jest.fn(bill.handleClickIconEye) 
       const handleClickIconEye = jest.fn() // don't call the actual function ( jest.fn(bill.handleClickIconEye(eye)))
-      $.fn.modal = jest.fn();
+      // $.fn.modal = jest.fn();
 
-      allEyeIcons.forEach(icon => {icon.addEventListener('click', handleClickIconEye) })
-      allEyeIcons.forEach(icon => { userEvent.click(icon)})
+      allEyeIcons.forEach(icon => {
+        icon.addEventListener('click', handleClickIconEye)
+        userEvent.click(icon)
+      })
       
       expect(handleClickIconEye).toHaveBeenCalledTimes(allEyeIconsCount)
+      expect(t).not.toThrow(Error);
     })
 
     // following will test  :  
     //  const iconEye = document.querySelectorAll(`div[data-testid="icon-eye"]`)
     //  if (iconEye) iconEye.forEach(icon => { icon.addEventListener('click', (e) => this.handleClickIconEye(icon))})'
     // => scenario where the event listener does not get added to ANY eye icon (in bills class constructor)
+    test("Then the icon eye btn should call handleClickIconEye' function", () => {
+      const html = BillsUI({data: bills})
+      document.body.innerHTML = html
+      const allEyeIcons = screen.getAllByTestId('icon-eye')
+      // -->  NOT ADDING EVENT LISTENER ON ICON <--- // 
+      const allEyeIconsCount = allEyeIcons.length
+      const handleClickIconEye = jest.fn()
+
+      expect(handleClickIconEye).not.toHaveBeenCalled()
+      expect(handleClickIconEye).not.toHaveBeenCalledTimes(allEyeIconsCount)
+    })
     test("Then the icon eye btn should call handleClickIconEye' function", () => {
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
@@ -242,11 +249,13 @@ describe("Given I am connected as an employee", () => {
       const eye = screen.getAllByTestId('icon-eye')[1]
       $.fn.modal = jest.fn();
       const handleClickIconEye = jest.fn(bill.handleClickIconEye(eye))
-      const eyeUrl = eye.getAttributeNames('data-bill-url')
+      // const eyeUrl = eye.getAttributeNames('data-bill-url')
       eye.addEventListener('click', handleClickIconEye)
+      
       userEvent.click(eye)
+
       expect(handleClickIconEye).toHaveBeenCalled()
-      expect(eyeUrl.length).not.toBe(0)
+      // expect(eyeUrl.length).not.toBe(0)
 
       const modale = screen.getByTestId('modaleFileEmployee')
       expect(modale).toBeTruthy()
