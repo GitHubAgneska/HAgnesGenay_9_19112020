@@ -19,7 +19,7 @@ export default class {
        //  }  else { throw new Error('error with eye icon')}
     })
     } 
-  } catch (error) { console.log(error)}
+  } catch (error) { console.log(error);throw new Error('error with eye icon')}
     
     /* if (iconEye ) { 
       iconEye.forEach(icon => {

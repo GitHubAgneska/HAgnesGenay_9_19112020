@@ -196,7 +196,7 @@ describe("Given I am connected as an employee", () => {
       const html = BillsUI({data: bills})
       document.body.innerHTML = html
       const t = () => { throw new Error('error with eye icon'); };
-      const allEyeIcons = screen.findAllByTestId('icon-eye')
+      const allEyeIcons = screen.getAllByTestId('icon-eye')
       const allEyeIconsCount = allEyeIcons.length
       // const handleClickIconEye = jest.fn(bill.handleClickIconEye) 
       const handleClickIconEye = jest.fn() // don't call the actual function ( jest.fn(bill.handleClickIconEye(eye)))
@@ -208,7 +208,6 @@ describe("Given I am connected as an employee", () => {
       })
       
       expect(handleClickIconEye).toHaveBeenCalledTimes(allEyeIconsCount)
-      expect(t).not.toThrow(Error);
     })
 
     // following will test  :  
