@@ -24,20 +24,26 @@ export default class NewBill {
   handleChangeFile = async(e) => {
     
     let file = this.document.querySelector(`input[data-testid="file"]`).files[0]
+    console.log(file);
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length-1]
-    
-    await this.firestore.storage
-    .ref(`justificatifs/${fileName}`)
-    .put(file)
-      .then(snapshot => snapshot.ref.getDownloadURL()) //  firestore sents back an url for image location
-      .then(url => {
-        this.fileUrl = url
-        this.fileName = fileName
-      })
-      const submitBtn = document.getElementById('btn-send-bill');
-      if (this.fileUrl !== null && this.fileName !== null) submitBtn.removeAttribute('disabled', true);
-      console.log( this.fileName, this.fileUrl)
+    try {
+      if (this.firestore) {
+        await this.firestore.storage
+        .ref(`justificatifs/${fileName}`)
+        .put(file)
+          .then(snapshot => snapshot.ref.getDownloadURL()) //  firestore sents back an url for image location
+          .then(url => {
+            this.fileUrl = url
+            this.fileName = fileName
+          })
+          const submitBtn = document.getElementById('btn-send-bill');
+          if (this.fileUrl !== null && this.fileName !== null) { 
+            submitBtn.removeAttribute('disabled', true);
+            console.log( this.fileName, this.fileUrl)
+          } else { throw new Error('file url was not retrieved')}
+      }
+    } catch (error) { console.log(error)}
   }
 
   /*   

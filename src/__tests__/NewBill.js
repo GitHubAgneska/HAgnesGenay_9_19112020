@@ -62,37 +62,112 @@ window.localStorage.setItem(
     }) 
     describe("Given I am connected as an employee", () => {
         describe("When I am on NewBill Page and have selected an image to upload", () => {
-            test("Then firebase should be called through handleChangeFile function and return an url", async() => {
+            test("Then firebase should be called", async()=> {
                 const html = NewBillUI()
                 document.body.innerHTML = html
                 const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) } 
                 
-                const newbill = new NewBill({document, onNavigate, localStorage: window.localStorage})
+                jest.mock("firebase")
+                firebase.firestore = jest.fn()
+                const firestore = null
+                const newbill = new NewBill({document, onNavigate, firestore, localStorage: window.localStorage})
+                
+                const fileMock = 'abcdef890.png'
                 const fileInput = screen.getByTestId('file')
                 const handleChangeFile = jest.fn(newbill.handleChangeFile)
-                fileInput.addEventListener('change', handleChangeFile,  { once: true })
-                const fileMock = 'abcdef890.png'
+                fileInput.addEventListener('change', handleChangeFile)
+
                 fireEvent.change(fileInput, { target: { files: [new File( [fileMock], fileMock)]} },)
-                const filePath = e.target.value.split(/\\/g)
-                const fileName = filePath[filePath.length-1]
+                
+                // adminStub = jest.spyOn(admin, "initializeApp");
+                expect(firebase.firestore).not.toHaveBeenCalled()
                 
 
+                // check our db set function is called with expected parameter
+                // expect(firestore.storage.ref(`justificatifs/${fileName}`).put).toBeCalled();
+
+            })
+            /* test("Then firebase should be called through handleChangeFile function and return an url", async() => {
+                const html = NewBillUI()
+                document.body.innerHTML = html
+                const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) } 
+                const newbill = new NewBill({document, onNavigate, localStorage: window.localStorage})
+
+                const fileInput = screen.getByTestId('file')
+                const handleChangeFile = jest.fn(newbill.handleChangeFile)
+                fileInput.addEventListener('change', handleChangeFile)
+                
+                const fileMock = { name: "caret.png", lastModified: 1617964926353, webkitRelativePath: "", size: 261, type: "image/png" }
+                const filePath = [ "C:", "fakepath", "caret.png" ]
+                const fileName = filePath[filePath.length-1]
+                const fileUrl = null
+
+                fireEvent.change(fileInput, { target: { files: [new File( [fileMock], fileMock)]} },)
+                
                 const asyncMock = jest.fn().mockResolvedValue('/fake_url');
-                await asyncMock();
-                /* const getSpy = jest.spyOn(firebase.storage, "post")
-                var ref = firebase.storage().ref("justificatifs/");
-                const newUrl = await firebase.get()
-                expect(getSpy).toHaveBeenCalledTimes(1) */
 
                 expect(handleChangeFile).toHaveBeenCalled()
                 expect(fileInput.files[0].name).toBe(fileMock)
-                
-                })
+                await asyncMock (() => 
+                    expect(fileUrl).toBe('/fake_url'),
+                    // expect(fileName).toBe('caret.png')
+                )
+            }) */
+            test("Then submit should not be possible if firebase was not reached", async() => {
+                const html = NewBillUI()
+                document.body.innerHTML = html
+                const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) } 
+                const newbill = new NewBill({document, onNavigate, firestore: null, localStorage: window.localStorage})
+                const fileInput = screen.getByTestId('file')
+                const handleChangeFile = jest.fn(newbill.handleChangeFile)
+                fileInput.addEventListener('change', handleChangeFile)
+
+                const submitBtn = screen.findByTestId('btn-send-bill')
+                const fileMock = 'abcdef890.png'
+                fireEvent.change(fileInput, { target: { files: [new File( [fileMock], fileMock)]} },)
+            
+                expect.assertions(1);
+                try {
+                    await firestore();
+                } catch (e) {
+                    expect(e).toBeTruthy()
+                }
             })
-        }) 
+        })
+    }) 
 
     describe("Given I am connected as an employee", () => {
         describe("When I am on NewBill Page, have made a new bill and submit it", () => {
+            test("Then submit should fail if fileUrl and fileName are null", async()=> {
+                const html = NewBillUI()
+                document.body.innerHTML = html
+                const onNavigate = (pathname) => { document.body.innerHTML = ROUTES({pathname}) }
+                window.localStorage.setItem('user', JSON.stringify({type: 'Employee'}))
+                
+                const newbill = new NewBill({document, onNavigate, firestore:null, localStorage: window.localStorage})
+                
+                screen.getByTestId("expense-type").value =  bills[0].type
+                screen.getByTestId("expense-name").value = bills[0].name
+                screen.getByTestId("datepicker").value = bills[0].date
+                screen.getByTestId("amount").value = bills[0].amount
+                screen.getByTestId("vat").value = bills[0].vat
+                screen.getByTestId("pct").value = bills[0].pct
+                screen.getByTestId("commentary").value = bills[0].commentary
+
+                const fileUrl= null
+                const fileName = null
+
+                const formNewBill = screen.getByTestId('form-new-bill') 
+                const handleSubmit = jest.fn(newbill.handleSubmit)
+                const createBill = jest.fn(newbill.createBill)
+                formNewBill.addEventListener('submit', handleSubmit)
+                fireEvent.submit(formNewBill)
+
+                expect(handleSubmit).toHaveBeenCalled()
+                expect(jest.fn(newbill.createBill)).not.toHaveBeenCalled()
+
+
+            })
             test("Then it should be created", () => {
                 const html = NewBillUI()
                 document.body.innerHTML = html
@@ -124,7 +199,7 @@ window.localStorage.setItem(
                         }])
                 })
             test("Then it should render Bills page", () => {
-                expect(screen.getByText('Mes notes de frais')).toBeTruthy()
+                expect(screen.findByText('Mes notes de frais')).toBeTruthy()  // ! FINDby ≠ getBy
             })
         })
     })
